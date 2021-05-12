@@ -1,0 +1,28 @@
+name: Node.js CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@25a956c84d5dd820d28caab9f86b8d183aeeff3d
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@5c355be17065acf11598c7a9bb47112fbcf2bbdc
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install
+        run: npm ci
+      - name: lint
+        run: npx eslint src/      
+        continue-on-error: true
+      - name: unit tests
+        run: npm run test-ci
+      - name: build
+        run: npm run build
